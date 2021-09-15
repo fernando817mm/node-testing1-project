@@ -6,17 +6,14 @@
  * EXAMPLE
  * trimProperties({ name: '  jane  ' }) // returns a new object { name: 'jane' }
  */
-function trimProperties(obj) {
-  const { foo, bar, baz } = obj;
-  const trimmedObj = {
-    foo: foo.trim(),
-    bar: bar.trim(),
-    baz: baz.trim(),
-  };
-  return trimmedObj;
-}
 
-trimProperties({ foo: "    fer ", bar: "  mar    ", baz: " mau" });
+function trimProperties(obj) {
+  const copy = Object.assign({}, obj);
+  for (let prop in copy) {
+    copy[prop] = copy[prop].trim();
+  }
+  return copy;
+}
 
 /**
  * [Exercise 2] trimPropertiesMutation trims in place the properties of an object
@@ -27,7 +24,10 @@ trimProperties({ foo: "    fer ", bar: "  mar    ", baz: " mau" });
  * trimPropertiesMutation({ name: '  jane  ' }) // returns the object mutated in place { name: 'jane' }
  */
 function trimPropertiesMutation(obj) {
-  // ✨ implement
+  for (let prop in obj) {
+    obj[prop] = obj[prop].trim();
+  }
+  return obj;
 }
 
 /**
@@ -39,7 +39,10 @@ function trimPropertiesMutation(obj) {
  * findLargestInteger([{ integer: 1 }, { integer: 3 }, { integer: 2 }]) // returns 3
  */
 function findLargestInteger(integers) {
-  // ✨ implement
+  let result = integers[0].integer;
+  for (let i = 1; i < integers.length; i++) {
+    if (integers[i].integer > result) return (result = integers[i].integer);
+  }
 }
 
 class Counter {
@@ -49,6 +52,7 @@ class Counter {
    */
   constructor(initialNumber) {
     // ✨ initialize whatever properties are needed
+    this.count = initialNumber;
   }
 
   /**
@@ -64,7 +68,7 @@ class Counter {
    * counter.countDown() // returns 0
    */
   countDown() {
-    // ✨ implement
+    return this.count > 0 ? this.count-- : 0;
   }
 }
 
@@ -74,6 +78,8 @@ class Seasons {
    */
   constructor() {
     // ✨ initialize whatever properties are needed
+    this.seasons = ["summer", "fall", "winter", "spring"];
+    this.currentSeason = 0;
   }
 
   /**
@@ -90,6 +96,13 @@ class Seasons {
    */
   next() {
     // ✨ implement
+    const result = this.seasons[this.currentSeason];
+    if (this.currentSeason === 3) {
+      this.currentSeason = 0;
+    } else {
+      ++this.currentSeason;
+    }
+    return result;
   }
 }
 
@@ -104,6 +117,8 @@ class Car {
     this.odometer = 0; // car initilizes with zero miles
     this.tank = tankSize; // car initiazes full of gas
     // ✨ initialize whatever other properties are needed
+    this.tankSize = tankSize;
+    this.mpg = mpg;
   }
 
   /**
@@ -121,6 +136,15 @@ class Car {
    */
   drive(distance) {
     // ✨ implement
+    const mileage = this.tank * this.mpg;
+    if (distance <= mileage) {
+      this.odometer = this.odometer + distance;
+      this.tank = this.tank - distance / this.mpg;
+    } else {
+      this.odometer = this.odometer + mileage;
+      this.tank = 0;
+    }
+    return this.odometer;
   }
 
   /**
@@ -136,6 +160,13 @@ class Car {
    */
   refuel(gallons) {
     // ✨ implement
+    const gallonsThatFit = this.tankSize - this.tank;
+    if (gallons <= gallonsThatFit) {
+      this.tank += gallons;
+    } else {
+      this.tank = this.tankSize;
+    }
+    return this.tank * this.mpg;
   }
 }
 
